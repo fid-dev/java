@@ -1,7 +1,5 @@
 package com.wavefront.integrations;
 
-import com.wavefront.metrics.ReconnectingSocket;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -30,7 +28,7 @@ public class Wavefront implements WavefrontSender {
   private final InetSocketAddress address;
   private final SocketFactory socketFactory;
 
-  private volatile ReconnectingSocket reconnectingSocket;
+  private volatile StandaloneReconnectingSocket reconnectingSocket;
   private AtomicInteger failures = new AtomicInteger();
   /**
    * Source to use if there's none.
@@ -94,7 +92,7 @@ public class Wavefront implements WavefrontSender {
       throw new IllegalStateException("Already connected");
     }
     try {
-      reconnectingSocket = new ReconnectingSocket(address.getHostName(), address.getPort(), socketFactory);
+      reconnectingSocket = new StandaloneReconnectingSocket(address.getHostName(), address.getPort(), socketFactory);
     } catch (Exception e) {
       throw new IOException(e);
     }
